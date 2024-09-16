@@ -1,13 +1,23 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="stylesheet" href="style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite App</title>
   </head>
   <body>
-    <div id="app"></div>
-    <script type="module" src="/main.js"></script>
+    <div class="cursor">
+      <img src="/arrow.png" class="arrow" />
+      <img src="/arrow.png" class="arrow" />
+    </div>
+    <div class="theme-buttons">
+      <button id="theme1" class="theme-button">Ecosystems at Risk</button>
+      <button id="theme2" class="theme-button">Climate Disasters</button>
+      <button id="theme3" class="theme-button">Carbon Footprint</button>
+    </div>
+    <script type="module" src="/main2.js"></script>
+    <script type="module" src="/cursor.js"></script>
   </body>
 </html>
