@@ -7,7 +7,7 @@ const moveCursor = (e) => {
   gsap.to(".cursor", {
     x: translateX,
     y: translateY,
-    duration: 0.2,
+    duration: 0.1,
     ease: "power1.out",
   });
   // cursor.style.transform = `translate3d(${translateX}px, ${translateY}px, 0)`;

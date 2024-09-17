@@ -2,25 +2,35 @@ import * as THREE from "three";
 import { gsap } from "gsap";
 
 const theme1 = [
-  "image-1.png",
-  "image-2.png",
-  "image-3.png",
-  "image-4.png",
-  "image-5.png",
+  // "bg-1.jpeg",
+  // "bg-1.jpeg",
+  // "bg-1.jpeg",
+  // "bg-1.jpeg",
+  // "bg-1.jpeg",
+  "image-1.jpg",
+  "image-2.jpg",
+  "image-3.jpg",
+  "image-4.jpg",
+  "image-5.jpg",
 ];
 const theme2 = [
-  "image-6.png",
-  "image-7.png",
-  "image-8.png",
-  "image-9.png",
-  "image-10.png",
+  // "bg-2.jpeg",
+  // "bg-2.jpeg",
+  // "bg-2.jpeg",
+  // "bg-2.jpeg",
+  // "bg-2.jpeg",
+  "image-6.jpg",
+  "image-7.jpg",
+  "image-8.jpg",
+  "image-9.jpg",
+  "image-10.jpg",
 ];
 const theme3 = [
-  "image-1.png",
-  "image-2.png",
-  "image-3.png",
-  "image-4.png",
-  "image-5.png",
+  "image-1.jpg",
+  "image-2.jpg",
+  "image-3.jpg",
+  "image-4.jpg",
+  "image-5.jpg",
 ];
 const themes = {
   theme1: theme1,
@@ -113,19 +123,39 @@ const addWheelEvent = () => {
     });
     bgImagesGroup.children.forEach((e) => {
       let newX = e.position.x + rotationAmount * 10;
-      if (newX <= -8 + e.position.z) {
-        // If image goes out of view on -ve x reset it to end of +ve x
-        newX = 9 - e.position.z;
-        e.position.set(newX, e.position.y, e.position.z);
-      } else if (newX >= 9 - e.position.z) {
-        // If image goes out of view on +ve x reset it to end of -ve x
-        newX = -8 + e.position.z;
-        e.position.set(newX, e.position.y, e.position.z);
-      } else {
-        gsap.to(e.position, { x: newX, overwrite: true });
-
-        // e.position.set(newX, e.position.y, e.position.z);
-      }
+      // if (newX <= -8 + e.position.z) {
+      //   // If image goes out of view on -ve x reset it to end of +ve x
+      //   newX = 9 - e.position.z;
+      //   e.position.set(newX, e.position.y, e.position.z);
+      // } else if (newX >= 9 - e.position.z) {
+      //   // If image goes out of view on +ve x reset it to end of -ve x
+      //   newX = -8 + e.position.z;
+      //   e.position.set(newX, e.position.y, e.position.z);
+      // } else {
+      //   gsap.to(e.position, { x: newX, overwrite: true });
+      //   // e.position.x = newX;
+      //   // e.position.set(newX, e.position.y, e.position.z);
+      // }
+      // gsap.to(e.position, {
+      //   x: newX,
+      //   overwrite: true,
+      //   onComplete: () => {
+      //     let currentX = bgImagesGroup.children
+      //       .filter((i) => {
+      //         return i.uuid == e.uuid;
+      //       })
+      //       .at(0).position.x;
+      //     if (currentX <= -8 + e.position.z) {
+      //       // If image goes out of view on -ve x reset it to end of +ve x
+      //       currentX = 9 - e.position.z;
+      //       e.position.set(currentX, e.position.y, e.position.z);
+      //     } else if (currentX >= 9 - e.position.z) {
+      //       // If image goes out of view on +ve x reset it to end of -ve x
+      //       currentX = -8 + e.position.z;
+      //       e.position.set(currentX, e.position.y, e.position.z);
+      //     }
+      //   },
+      // });
     });
     // console.log("targetRotation,lastTheta,initialTheta", targetRotation);
     // if (targetRotation < 0) {
@@ -758,8 +788,8 @@ const changePosters = (newTheme) => {
     group.rotation,
     {
       z: 0,
-      ease: "power2.out",
-      duration: 0.7,
+      ease: "power1.inOut",
+      duration: 1,
       onComplete: changePlanes2,
     }
     // 0
@@ -909,3 +939,55 @@ button3.onclick = () => {
   if (currentTheme == "theme3") return;
   changePosters("theme3");
 };
+let isDragging = false;
+let previousMousePosition = {
+  x: 0,
+  y: 0,
+};
+function onPointerDown(event) {
+  if (disableWheel) return;
+  isDragging = true;
+  previousMousePosition = {
+    x: event.clientX || event.touches[0].clientX,
+    y: event.clientY || event.touches[0].clientY,
+  };
+}
+
+// Function to handle mouse move or touch move
+function onPointerMove(event) {
+  if (!isDragging) return;
+
+  let currentMousePosition = {
+    x: event.clientX || event.touches[0].clientX,
+    y: event.clientY || event.touches[0].clientY,
+  };
+
+  let deltaMove = {
+    x: currentMousePosition.x - previousMousePosition.x,
+    y: currentMousePosition.y - previousMousePosition.y,
+  };
+
+  // Rotate the group based on mouse movement
+  const rotationSpeed = 0.001;
+  // group.rotation.z -= deltaMove.x * rotationSpeed;
+  gsap.to(group.rotation, {
+    z: group.rotation.z - deltaMove.x * 0.005,
+    duration: 1,
+  });
+
+  previousMousePosition = currentMousePosition;
+}
+
+// Function to handle mouse up or touch end
+function onPointerUp() {
+  isDragging = false;
+}
+
+// Add event listeners for mouse and touch events
+window.addEventListener("mousedown", onPointerDown, false);
+window.addEventListener("mousemove", onPointerMove, false);
+window.addEventListener("mouseup", onPointerUp, false);
+
+window.addEventListener("touchstart", onPointerDown, false);
+window.addEventListener("touchmove", onPointerMove, false);
+window.addEventListener("touchend", onPointerUp, false);
