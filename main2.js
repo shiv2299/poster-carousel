@@ -7,11 +7,17 @@ const theme1 = [
   // "bg-1.jpeg",
   // "bg-1.jpeg",
   // "bg-1.jpeg",
-  "image-1.jpg",
-  "image-2.jpg",
-  "image-3.jpg",
-  "image-4.jpg",
-  "image-5.jpg",
+  // "image-1.jpg",
+  // "image-2.jpg",
+  // "image-3.jpg",
+  // "image-4.jpg",
+  // "image-5.jpg",
+  "Eco-system-at-risk1.png",
+  "Eco-system-at-risk2.png",
+  "Eco-system-at-risk3.png",
+
+  // "Climate-Disaster2.png",
+  // "Climate-Disaster3.png",
 ];
 const theme2 = [
   // "bg-2.jpeg",
@@ -19,18 +25,26 @@ const theme2 = [
   // "bg-2.jpeg",
   // "bg-2.jpeg",
   // "bg-2.jpeg",
-  "image-6.jpg",
-  "image-7.jpg",
-  "image-8.jpg",
-  "image-9.jpg",
-  "image-10.jpg",
+  // "image-6.jpg",
+  // "image-7.jpg",
+  // "image-8.jpg",
+  // "image-9.jpg",
+  // "image-10.jpg",
+  "Climate-Disaster1.png",
+  "Climate-Disaster2.png",
+  "Climate-Disaster3.png",
+  // "Carbon-footprint1.png",
+  // "Carbon-footprint2.png",
 ];
 const theme3 = [
-  "image-1.jpg",
-  "image-2.jpg",
-  "image-3.jpg",
-  "image-4.jpg",
-  "image-5.jpg",
+  // "image-1.jpg",
+  // "image-2.jpg",
+  // "image-3.jpg",
+  // "image-4.jpg",
+  // "image-5.jpg",
+  "Carbon-footprint1.png",
+  "Carbon-footprint2.png",
+  "Carbon-footprint3.png",
 ];
 const themes = {
   theme1: theme1,
@@ -86,7 +100,7 @@ function normalizeWheelSpeed(event) {
 }
 const radius = 9;
 const n = themes[currentTheme].length;
-const nRepeat = n * 5;
+const nRepeat = n * 8;
 let totalRotation = 0;
 const angleIncrement = (Math.PI * 2) / nRepeat; // equally divide by twice the number of items to create full circle
 
@@ -100,6 +114,8 @@ let waveFlag = true;
 let firstItemIndex = 0,
   lastItemIndex = n - 1;
 let scroll = 0;
+let bgImgMap = {};
+let isAnimating = false;
 const addWheelEvent = () => {
   addEventListener("wheel", (event) => {
     if (disableWheel) return;
@@ -122,20 +138,36 @@ const addWheelEvent = () => {
       // ease: "sine.inOut",
     });
     bgImagesGroup.children.forEach((e) => {
+      isAnimating = true;
       let newX = e.position.x + rotationAmount * 10;
-      // if (newX <= -8 + e.position.z) {
-      //   // If image goes out of view on -ve x reset it to end of +ve x
-      //   newX = 9 - e.position.z;
-      //   e.position.set(newX, e.position.y, e.position.z);
-      // } else if (newX >= 9 - e.position.z) {
-      //   // If image goes out of view on +ve x reset it to end of -ve x
-      //   newX = -8 + e.position.z;
-      //   e.position.set(newX, e.position.y, e.position.z);
-      // } else {
-      //   gsap.to(e.position, { x: newX, overwrite: true });
-      //   // e.position.x = newX;
-      //   // e.position.set(newX, e.position.y, e.position.z);
-      // }
+      if (e.uuid in bgImgMap) {
+        bgImgMap[e.uuid].kill();
+      }
+      if (newX <= -12 + e.position.z - 0.5) {
+        // If image goes out of view on -ve x reset it to end of +ve x
+        if (e.uuid in bgImgMap) {
+          // bgImgMap[e.uuid].kill();
+        }
+        newX = 12 - e.position.z;
+        e.position.set(newX, e.position.y, e.position.z);
+      } else if (newX >= 12 - e.position.z + 0.5) {
+        // If image goes out of view on +ve x reset it to end of -ve x
+        if (e.uuid in bgImgMap) {
+          // bgImgMap[e.uuid].kill();
+        }
+        newX = -12 + e.position.z;
+        e.position.set(newX, e.position.y, e.position.z);
+      } else {
+        if (e.uuid in bgImgMap) {
+          // bgImgMap[e.uuid].kill();
+        }
+        const anim = gsap.to(e.position, {
+          x: newX,
+        });
+        bgImgMap[e.uuid] = anim;
+        // e.position.x = newX;
+        // e.position.set(newX, e.position.y, e.position.z);
+      }
       // gsap.to(e.position, {
       //   x: newX,
       //   overwrite: true,
@@ -157,101 +189,6 @@ const addWheelEvent = () => {
       //   },
       // });
     });
-    // console.log("targetRotation,lastTheta,initialTheta", targetRotation);
-    // if (targetRotation < 0) {
-    //   const val = parseFloat(
-    //     (targetRotation % (angleIncrement * -1)).toFixed(2)
-    //   );
-    //   console.log(
-    //     "targetRotation%(angleIncrement*-1)",
-    //     (targetRotation % (angleIncrement * -1)).toFixed(2)
-    //   );
-    //   if (val == 0) {
-    //     lastTheta += angleIncrement;
-    //     totalRotation = 0;
-    //     const x = radius * Math.cos(lastTheta);
-    //     const y = radius * Math.sin(lastTheta);
-    //     const firstItem = group.children[firstItemIndex];
-    //     firstItem.position.set(x, y, 0);
-    //     firstItem.rotation.set(0, 0, lastTheta - Math.PI / 2);
-    //     firstItemIndex += 1;
-    //     if (firstItemIndex >= n) {
-    //       firstItemIndex = 0;
-    //     }
-    //   }
-    // } else {
-    //   const val = parseFloat((targetRotation % angleIncrement).toFixed(2));
-    //   console.log(
-    //     "targetRotation%(angleIncrement)",
-    //     (targetRotation % angleIncrement).toFixed(2)
-    //   );
-    //   if (val == 0) {
-    //     initialTheta -= angleIncrement;
-    //     totalRotation = 0;
-    //     const x = radius * Math.cos(initialTheta);
-    //     const y = radius * Math.sin(initialTheta);
-    //     const lastItem = group.children[lastItemIndex];
-    //     lastItem.position.set(x, y, 0);
-    //     lastItem.rotation.set(0, 0, initialTheta - Math.PI / 2);
-    //     lastItemIndex -= 1;
-    //     if (lastItemIndex < 0) {
-    //       lastItemIndex = n - 1;
-    //     }
-    //   }
-    // }
-    let val = 0;
-    if (totalRotation < 0) {
-      val = parseFloat((totalRotation % (angleIncrement * -1)).toFixed(2));
-    } else {
-      val = parseFloat((totalRotation % angleIncrement).toFixed(2));
-    }
-    // if (val == 0 && totalRotation < 0) {
-    //   //left
-    //   lastTheta += angleIncrement;
-    //   totalRotation = 0;
-    //   const x = radius * Math.cos(lastTheta);
-    //   const y = radius * Math.sin(lastTheta);
-    //   const firstItem = group.children[firstItemIndex];
-    //   firstItem.position.set(x, y, 0);
-    //   firstItem.rotation.set(0, 0, lastTheta - Math.PI / 2);
-    //   firstItemIndex += 1;
-    //   if (firstItemIndex >= n) {
-    //     firstItemIndex = 0;
-    //   }
-    // } else {
-    //   if (val == 0) {
-    //     //right
-
-    //     initialTheta -= angleIncrement;
-    //     totalRotation = 0;
-    //     const x = radius * Math.cos(initialTheta);
-    //     const y = radius * Math.sin(initialTheta);
-    //     const lastItem = group.children[lastItemIndex];
-    //     lastItem.position.set(x, y, 0);
-    //     lastItem.rotation.set(0, 0, initialTheta - Math.PI / 2);
-    //     lastItemIndex -= 1;
-    //     if (lastItemIndex < 0) {
-    //       lastItemIndex = n - 1;
-    //     }
-    //   }
-    // }
-    // if (targetRotation < 0) {
-    //   if ((targetRotation * -1) / angleIncrement >= 1) {
-    //     console.log((targetRotation * -1) / angleIncrement);
-    //     // targetRotation = 0;
-    //     console.log("remove1");
-    //   }
-    // } else {
-    //   if (targetRotation / angleIncrement >= 1) {
-    //     console.log(targetRotation / angleIncrement);
-    //     // targetRotation = 0;
-    //     console.log("remove2");
-    //   }
-    // }
-    // const intersects = rightRayCaster.intersectObjects(group.children);
-    // console.log("intersects", intersects);
-    // const intersects2 = lefRayCaster.intersectObjects(group.children);
-    // console.log("intersects2", intersects2);
   });
 };
 function createCarouselItems() {
@@ -394,234 +331,10 @@ addWheelEvent();
 createBGImages();
 addMouseEvent();
 animate(0);
-
-const changePlanes = () => {
-  let toRemove = [];
-  // group.children.forEach((e) => {
-  //   const positions = e.geometry.attributes.position.array;
-  //   const numVertices = positions.length / 3;
-  //   for (let i = 0; i < numVertices; i++) {
-  //     const x = positions[i * 3];
-  //     const y = positions[i * 3 + 1];
-  //     const zIndex = i * 3 + 2;
-  //     positions[zIndex] = 0;
-  //   }
-  //   e.geometry.attributes.position.needsUpdate = true;
-  // });
-  console.log("total planes before removing => ", group.children.length);
-
-  // remove all planes except first 5 and last 5
-  group.children.forEach((e, i) => {
-    if (i >= 5 && i < 20) {
-      toRemove.push(e);
-    }
-    // if (i >= 5) {
-    //   toRemove.push(e);
-    // }
-    // if (i < 20) {
-    //   console.log("i", i);
-    //   toRemove.push(e);
-    // }
-  });
-  toRemove.forEach((e) => {
-    group.remove(e);
-  });
-  console.log("to be removed=> ", toRemove.length);
-  console.log("total planes after removing => ", group.children.length);
-  const isBack = (group.rotation.y / Math.PI) % 2 != 0;
-  setTimeout(() => {
-    // let i = 6;
-    // group.children.forEach((e) => {
-    //   let texture = new THREE.TextureLoader().load(`image-${i}.png`);
-    //   texture.center = new THREE.Vector2(0.5, 0.5);
-    //   texture.rotation = Math.PI;
-    //   texture.flipY = false;
-    //   texture.encoding = THREE.sRGBEncoding;
-    //   texture.colorSpace = THREE.SRGBColorSpace;
-    //   const planeGeometry = new THREE.PlaneGeometry(1.4, 2.0, 100, 100);
-    //   const planeMaterial = new THREE.MeshPhongMaterial({
-    //     // color: "#ff0000",
-    //     flatShading: true,
-    //     map: texture,
-    //     side: THREE.BackSide,
-    //   });
-    //   i++;
-    //   if (i == 11) {
-    //     i = 6;
-    //   }
-    //   e.material.side = THREE.FrontSide;
-    //   const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
-    //   e.add(planeMesh);
-    //   // let texture = new THREE.TextureLoader().load(`image-${i}.png`);
-    //   // texture.encoding = THREE.sRGBEncoding;
-    //   // texture.colorSpace = THREE.SRGBColorSpace;
-    //   // i++;
-    //   // if (i == 11) {
-    //   //   i = 6;
-    //   // }
-    //   // e.material.map = texture;
-    // });
-    let idx = group.children.length;
-    toRemove = [];
-    group.children.forEach((e) => toRemove.push(e));
-    // toRemove.forEach((e) => {
-    //   const x = radius * Math.cos(initialTheta);
-    //   const y = radius * Math.sin(initialTheta);
-    //   e.position.set(x, y, (idx / 50) * -1);
-    //   e.rotation.set(0, 0, 0);
-    //   // idx++;
-    //   group.add(e);
-    // });
-    console.log("remove old => ", toRemove.length);
-    console.log("group.length => ", group.children.length);
-    for (let i = 0; i < nRepeat; i++) {
-      let imgNumber = (i + 1) % n;
-      if (imgNumber == 0) {
-        imgNumber = n;
-      }
-      // e.children.forEach((child) => e.remove(child));
-      let texture = new THREE.TextureLoader().load(
-        themes[currentTheme][imgNumber - 1]
-      );
-      texture.center = new THREE.Vector2(0.5, 0.5);
-      if (!isBack) {
-        texture.rotation = Math.PI;
-        texture.flipY = false;
-      }
-      texture.encoding = THREE.sRGBEncoding;
-      texture.colorSpace = THREE.SRGBColorSpace;
-      const planeGeometry = new THREE.PlaneGeometry(1.4, 2.0, 100, 100);
-      const planeMaterial = new THREE.MeshPhongMaterial({
-        // color: "#ff0000",
-        flatShading: true,
-        map: texture,
-        side: THREE.DoubleSide,
-      });
-      // i++;
-      // if (i >= newTheme.length) {
-      //   i = 0;
-      // }
-      const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
-      const x = radius * Math.cos(initialTheta);
-      const y = radius * Math.sin(initialTheta);
-      planeMesh.position.set(x, y, (idx / 50) * (isBack ? 1 : -1));
-      // planeMesh.rotation.set(0, group.rotation.y + Math.PI, 0);
-      group.add(planeMesh);
-      // let texture = new THREE.TextureLoader().load(`image-${i}.png`);
-      // texture.encoding = THREE.sRGBEncoding;
-      // texture.colorSpace = THREE.SRGBColorSpace;
-      // i++;
-      // if (i == 11) {
-      //   i = 6;
-      // }
-      // e.material.map = texture;
-    }
-    console.log("group after adding new planes=>", group.children.length);
-    console.log(
-      "rotating group => ",
-      group.rotation.y,
-      group.rotation.y + Math.PI,
-      group.rotation.y / Math.PI
-    );
-
-    gsap.to(group.rotation, {
-      y: group.rotation.y + Math.PI,
-      // ease: "power2.inOut",
-      duration: 2,
-
-      onComplete: () => {
-        let isBack = (group.rotation.y / Math.PI) % 2 != 0;
-        console.log("after rotating group y => ", group.rotation.y);
-        // let i = 6;
-        toRemove.forEach((e) => group.remove(e));
-        console.log("group after removing planes=>", group.children.length);
-        let j = group.children.length - 1;
-        group.children.forEach((e, i) => {
-          e.position.z = (i / 50) * (isBack ? 1 : -1);
-          i--;
-          // let texture = new THREE.TextureLoader().load(`image-${i}.png`);
-          // texture.encoding = THREE.sRGBEncoding;
-          // texture.colorSpace = THREE.SRGBColorSpace;
-          // i++;
-          // if (i == 11) {
-          //   i = 6;
-          // }
-          // e.material.map = texture;
-        });
-        // setTimeout(() => {
-        let newTheta = lastTheta;
-        // console.log("group.children", group.children);
-        console.log("Setting new items");
-        for (let i = group.children.length - 1; i >= 0; i--) {
-          // console.log("i", i);
-          // console.log("group.children[i]", group.children[i]);
-          let x = radius * Math.cos(newTheta);
-          let y = radius * Math.sin(newTheta);
-          console.log(
-            `${i} => x:${x}, y:${y}, rotation: ${newTheta - Math.PI / 2}`
-          );
-          gsap.to(group.children[i].position, {
-            x,
-            y,
-            z: 0,
-            duration: 0.7,
-          });
-          gsap.to(group.children[i].rotation, {
-            x: 0,
-            y: 0,
-            z:
-              newTheta > Math.PI * 2
-                ? newTheta - Math.PI * 2 - Math.PI / 2
-                : newTheta - Math.PI / 2,
-            duration: 0.7,
-          });
-          // e.rotation.set(0, 0, newTheta - Math.PI / 2);
-          // e.position.set(x, y, 0);
-          newTheta -= angleIncrement;
-        }
-
-        // group.children.forEach((e) => {
-
-        // });
-        // }, 100);
-        setTimeout(() => {
-          // disableWheel = false;
-          waveFlag = true;
-        }, 700);
-      },
-    });
-  }, 700);
-  group.children.forEach((e, i) => {
-    const x = radius * Math.cos(initialTheta);
-    const y = radius * Math.sin(initialTheta);
-    gsap.to(
-      e.position,
-      {
-        x,
-        y,
-        z: (i / 50) * (isBack ? 1 : -1),
-        ease: "power2.inOut",
-        duration: 0.7,
-      }
-      // i == 0 ? ">" : "<"
-    );
-    gsap.to(
-      e.rotation,
-      {
-        x: 0,
-        y: 0,
-        z: i < 5 ? 0 : Math.PI * 2,
-        ease: "power2.inOut",
-        duration: 0.7,
-      }
-      // "<"
-    );
-  });
-};
 const changePlanes2 = () => {
   let toRemove = [];
   group.children.forEach((e, i) => {
-    if (i >= 5 && i < 20) {
+    if (i >= 3 && i < 21) {
       toRemove.push(e);
     }
   });
@@ -642,7 +355,7 @@ const changePlanes2 = () => {
     gsap.to(e.rotation, {
       x: 0,
       y: 0,
-      z: i < 5 ? 0 : e.rotation.z < Math.PI ? 0 : Math.PI * 2,
+      z: i < 3 ? 0 : e.rotation.z < Math.PI ? 0 : Math.PI * 2,
       ease: "power2.inOut",
       duration: 0.7,
     });
@@ -651,7 +364,7 @@ const changePlanes2 = () => {
   setTimeout(() => {
     toRemove = [];
     group.children.forEach((e, i) => {
-      if (i >= 5) {
+      if (i >= 3) {
         toRemove.push(e);
       }
     });
@@ -769,161 +482,20 @@ const changePlanes2 = () => {
       setTimeout(() => {
         disableWheel = false;
       }, 1000);
-    }, 2500);
+    }, 1500);
   }, 700);
 };
 const changePosters = (newTheme) => {
   currentTheme = newTheme;
   // waveFlag = false;
   disableWheel = true;
-
-  console.log(
-    "Rotating group Z => ",
-    group.rotation.x,
-    group.rotation.y,
-    group.rotation.z
-  );
-
-  gsap.to(
-    group.rotation,
-    {
-      z: 0,
-      ease: "power1.inOut",
-      duration: 1,
-      onComplete: changePlanes2,
-    }
-    // 0
-  );
+  gsap.to(group.rotation, {
+    z: group.rotation.z > Math.PI * 2 ? Math.PI * 2 : 0,
+    ease: "power1.inOut",
+    duration: 1,
+    onComplete: changePlanes2,
+  });
 };
-// const change = () => {
-//   waveFlag = false;
-//   const timeline = gsap.timeline({
-//     onComplete: () => {
-//       // toRemove.forEach((e) => {
-//       //   const x = radius * Math.cos(initialTheta);
-//       //   const y = radius * Math.sin(initialTheta);
-//       //   e.position.set(x, y, 0);
-//       //   e.rotation.set(0, 0, 0);
-//       //   group.add(e);
-//       // });
-//       // let i = 6;
-//       // group.children.forEach((e) => {
-//       //   var texture = new THREE.TextureLoader().load(`image-${i}.png`);
-//       //   texture.encoding = THREE.sRGBEncoding;
-//       //   texture.colorSpace = THREE.SRGBColorSpace;
-//       //   i++;
-//       //   if (i == 11) {
-//       //     i = 6;
-//       //   }
-//       //   e.material.map = texture;
-//       // });
-//       // gsap.to(group.rotation, {
-//       //   y: Math.PI * 2,
-//       //   ease: "power2.out",
-//       //   duration: 0.7,
-//       // });
-//     },
-//   });
-//   group.children.forEach((e) => {
-//     const positions = e.geometry.attributes.position.array;
-//     const numVertices = positions.length / 3;
-//     for (let i = 0; i < numVertices; i++) {
-//       const x = positions[i * 3];
-//       const y = positions[i * 3 + 1];
-//       const zIndex = i * 3 + 2;
-//       positions[zIndex] = 0;
-//     }
-//     e.geometry.attributes.position.needsUpdate = true;
-//   });
-//   let toRemove = [];
-//   gsap.to(
-//     group.rotation,
-//     {
-//       z: 0,
-//       ease: "power2.out",
-//       duration: 0.7,
-//       onComplete: () => {
-//         group.children.forEach((e, i) => {
-//           if (i >= 5 && i < 20) {
-//             toRemove.push(e);
-//           }
-//           // if (i >= 5) {
-//           //   toRemove.push(e);
-//           // }
-//           // if (i < 20) {
-//           //   console.log("i", i);
-//           //   toRemove.push(e);
-//           // }
-//         });
-//         toRemove.forEach((e) => {
-//           group.remove(e);
-//         });
-//         group.children.forEach((e, i) => {
-//           const x = radius * Math.cos(initialTheta);
-//           const y = radius * Math.sin(initialTheta);
-//           // const x1 = e.position.x,
-//           //   y1 = e.position.y;
-//           // const centerX = (x1 + x) / 2;
-//           // const centerY = (y1 + y) / 2;
-//           const startAngle = e.rotation.z;
-//           const endAngle = initialTheta;
-//           let clockwise = startAngle > endAngle;
-
-//           // Calculate the angle difference based on the direction
-//           let angleDifference = clockwise
-//             ? endAngle - startAngle - 2 * Math.PI
-//             : endAngle - startAngle;
-//           // gsap.to(
-//           //   { angle: startAngle },
-//           //   {
-//           //     angle: endAngle,
-//           //     duration: 0.7, // Duration of the animation in seconds
-//           //     ease: "power2.out",
-//           //     onUpdate: function () {
-//           //       const angle = this.targets()[0].angle;
-//           //       console.log("angle", angle);
-//           //       const x = radius * Math.cos(angle);
-//           //       const y = radius * Math.sin(angle);
-
-//           //       // Update your item's position (assuming your item has an id of 'item')
-
-//           //       gsap.set(e.position, {
-//           //         x: x,
-//           //         y: y,
-//           //         z: 0,
-//           //         ease: "power2.out",
-//           //         duration: 0.7,
-//           //       });
-//           //       gsap.set(e.rotation, {
-//           //         z: angle - Math.PI / 2,
-//           //         ease: "power2.out",
-//           //         duration: 0.7,
-//           //       });
-//           //     },
-//           //   }
-//           // );
-//           timeline.to(
-//             e.position,
-//             { x, y, z: 0, ease: "power2.out", duration: 0.7 },
-//             i == 0 ? ">" : 0.7
-//           );
-//           timeline.to(
-//             e.rotation,
-//             {
-//               x: 0,
-//               y: 0,
-//               z: i < 5 ? 0 : Math.PI * 2,
-//               ease: "power2.out",
-//               duration: 0.7,
-//             },
-//             "<"
-//           );
-//         });
-//       },
-//     }
-//     // 0
-//   );
-// };
 const button = document.getElementById("theme1");
 const button2 = document.getElementById("theme2");
 const button3 = document.getElementById("theme3");
@@ -978,12 +550,10 @@ function onPointerMove(event) {
   previousMousePosition = currentMousePosition;
 }
 
-// Function to handle mouse up or touch end
 function onPointerUp() {
   isDragging = false;
 }
 
-// Add event listeners for mouse and touch events
 window.addEventListener("mousedown", onPointerDown, false);
 window.addEventListener("mousemove", onPointerMove, false);
 window.addEventListener("mouseup", onPointerUp, false);

@@ -13,8 +13,6 @@ body{
 .cursor{
   pointer-events: none;
   position: absolute;
-  left: 0;
-  top: 0;
   height: 63px;
   width: 63px;
   border: 1.5px solid black;
