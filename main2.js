@@ -46,13 +46,32 @@ const theme3 = [
   "Carbon-footprint2.png",
   "Carbon-footprint3.png",
 ];
+
 const themes = {
   theme1: theme1,
   theme2: theme2,
   theme3: theme3,
 };
-let isBack = false;
+const textures = {
+  theme1: [],
+  theme2: [],
+  theme3: [],
+};
 let currentTheme = "theme1";
+const n = themes[currentTheme].length;
+const nRepeat = n * 8;
+for (let i = 0; i < nRepeat; i++) {
+  let imgNumber = (i + 1) % n;
+  if (imgNumber == 0) {
+    imgNumber = n;
+  }
+  for (let key in themes) {
+    let texture = new THREE.TextureLoader().load(themes[key][imgNumber - 1]);
+    texture.encoding = THREE.sRGBEncoding;
+    texture.colorSpace = THREE.SRGBColorSpace;
+    textures[key].push(texture);
+  }
+}
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
   75,
@@ -99,8 +118,7 @@ function normalizeWheelSpeed(event) {
   return normalized;
 }
 const radius = 9;
-const n = themes[currentTheme].length;
-const nRepeat = n * 8;
+
 let totalRotation = 0;
 const angleIncrement = (Math.PI * 2) / nRepeat; // equally divide by twice the number of items to create full circle
 
@@ -209,15 +227,15 @@ function createCarouselItems() {
     if (imgNumber == 0) {
       imgNumber = n;
     }
-    let texture = new THREE.TextureLoader().load(
-      themes[currentTheme][imgNumber - 1]
-    );
-    texture.encoding = THREE.sRGBEncoding;
-    texture.colorSpace = THREE.SRGBColorSpace;
+    // let texture = new THREE.TextureLoader().load(
+    //   themes[currentTheme][imgNumber - 1]
+    // );
+    // texture.encoding = THREE.sRGBEncoding;
+    // texture.colorSpace = THREE.SRGBColorSpace;
     const planeMaterial = new THREE.MeshPhongMaterial({
       // color: "#ff0000",
       flatShading: true,
-      map: texture,
+      map: textures[currentTheme][i],
       side: THREE.DoubleSide,
     });
     const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
@@ -379,17 +397,17 @@ const changePlanes2 = () => {
         imgNumber = n;
       }
       // e.children.forEach((child) => e.remove(child));
-      let texture = new THREE.TextureLoader().load(
-        themes[currentTheme][imgNumber - 1]
-      );
-      texture.center = new THREE.Vector2(0.5, 0.5);
-      texture.encoding = THREE.sRGBEncoding;
-      texture.colorSpace = THREE.SRGBColorSpace;
+      // let texture = new THREE.TextureLoader().load(
+      //   themes[currentTheme][imgNumber - 1]
+      // );
+      // texture.center = new THREE.Vector2(0.5, 0.5);
+      // texture.encoding = THREE.sRGBEncoding;
+      // texture.colorSpace = THREE.SRGBColorSpace;
       const planeGeometry = new THREE.PlaneGeometry(1.4, 2.0, 100, 100);
       const planeMaterial = new THREE.MeshPhongMaterial({
         // color: "#ff0000",
         flatShading: true,
-        map: texture,
+        map: textures[currentTheme][i],
         side: THREE.DoubleSide,
       });
       // i++;
