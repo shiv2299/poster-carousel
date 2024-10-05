@@ -479,12 +479,16 @@ const changePosters = (newTheme) => {
   currentTheme = newTheme;
   // waveFlag = false;
   disableWheel = true;
-  gsap.to(group.rotation, {
-    z: group.rotation.z > Math.PI * 2 ? Math.PI * 2 : 0,
-    ease: "power1.inOut",
-    duration: 1,
-    onComplete: changePlanes2,
-  });
+  if (group.rotation.z == 0) {
+    changePlanes2();
+  } else {
+    gsap.to(group.rotation, {
+      z: group.rotation.z > Math.PI * 2 ? Math.PI * 2 : 0,
+      ease: "power1.inOut",
+      duration: 1,
+      onComplete: changePlanes2,
+    });
+  }
 };
 const button = document.getElementById("theme1");
 const button2 = document.getElementById("theme2");
