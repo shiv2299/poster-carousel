@@ -2,46 +2,16 @@ import * as THREE from "three";
 import { gsap } from "gsap";
 
 const theme1 = [
-  // "bg-1.jpeg",
-  // "bg-1.jpeg",
-  // "bg-1.jpeg",
-  // "bg-1.jpeg",
-  // "bg-1.jpeg",
-  // "image-1.jpg",
-  // "image-2.jpg",
-  // "image-3.jpg",
-  // "image-4.jpg",
-  // "image-5.jpg",
   "Eco-system-at-risk1.png",
   "Eco-system-at-risk2.png",
   "Eco-system-at-risk3.png",
-
-  // "Climate-Disaster2.png",
-  // "Climate-Disaster3.png",
 ];
 const theme2 = [
-  // "bg-2.jpeg",
-  // "bg-2.jpeg",
-  // "bg-2.jpeg",
-  // "bg-2.jpeg",
-  // "bg-2.jpeg",
-  // "image-6.jpg",
-  // "image-7.jpg",
-  // "image-8.jpg",
-  // "image-9.jpg",
-  // "image-10.jpg",
   "Climate-Disaster1.png",
   "Climate-Disaster2.png",
   "Climate-Disaster3.png",
-  // "Carbon-footprint1.png",
-  // "Carbon-footprint2.png",
 ];
 const theme3 = [
-  // "image-1.jpg",
-  // "image-2.jpg",
-  // "image-3.jpg",
-  // "image-4.jpg",
-  // "image-5.jpg",
   "Carbon-footprint1.png",
   "Carbon-footprint2.png",
   "Carbon-footprint3.png",
@@ -57,9 +27,11 @@ const textures = {
   theme2: [],
   theme3: [],
 };
+let isPhone = innerWidth <= 768;
+let isSmallPhone = innerWidth <= 425;
 let currentTheme = "theme1";
 const n = themes[currentTheme].length;
-const nRepeat = n * 8;
+const nRepeat = isPhone ? (isSmallPhone ? n * 14 : n * 11) : n * 8;
 for (let i = 0; i < nRepeat; i++) {
   let imgNumber = (i + 1) % n;
   if (imgNumber == 0) {
@@ -79,8 +51,8 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
-camera.position.z = 2; //2
-camera.position.y = 9; //9
+camera.position.z = isPhone ? 3 : 2; //2
+camera.position.y = isSmallPhone ? 12 : 9; //9
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(innerWidth, innerHeight);
 renderer.setPixelRatio(devicePixelRatio);
@@ -117,7 +89,7 @@ function normalizeWheelSpeed(event) {
   }
   return normalized;
 }
-const radius = 9;
+const radius = isSmallPhone ? 12 : 9;
 
 let totalRotation = 0;
 const angleIncrement = (Math.PI * 2) / nRepeat; // equally divide by twice the number of items to create full circle
@@ -352,7 +324,7 @@ animate(0);
 const changePlanes2 = () => {
   let toRemove = [];
   group.children.forEach((e, i) => {
-    if (i >= 3 && i < 21) {
+    if (i >= 3 && i < nRepeat - n) {
       toRemove.push(e);
     }
   });
@@ -473,7 +445,7 @@ const changePlanes2 = () => {
             newTheta - Math.PI / 2
           }`
         );
-        if (i < 5 || i > 20) {
+        if (i < n || i > nRepeat - n - 1) {
           gsap.to(group.children[i].position, {
             x,
             y,
